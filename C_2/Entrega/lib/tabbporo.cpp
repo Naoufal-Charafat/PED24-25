@@ -8,23 +8,42 @@
 
 TNodoABB::TNodoABB() {
     // Constructor por defecto de item se invoca automáticamente
-    // Los subárboles iz y de se invocan automáticamente con sus constructores
+    // Inicializo los punteros a los subárboles
+    iz = new TABBPoro();
+    de = new TABBPoro();
 }
 
-TNodoABB::TNodoABB(const TNodoABB & n) : item(n.item), iz(n.iz), de(n.de) {
+TNodoABB::TNodoABB(const TNodoABB & n) : item(n.item) {
     // Copio el item y los subárboles izquierdo y derecho
+    iz = new TABBPoro(*n.iz);
+    de = new TABBPoro(*n.de);
 }
 
 TNodoABB::~TNodoABB() {
-    // No necesito hacer nada explícitamente, ya que los destructores 
-    // de item, iz, y de se invocarán automáticamente
+    // Libero la memoria de los subárboles
+    if(iz != NULL) {
+        delete iz;
+        iz = NULL;
+    }
+    if(de != NULL) {
+        delete de;
+        de = NULL;
+    }
 }
 
 TNodoABB & TNodoABB::operator=(const TNodoABB & n) {
     if(this != &n) {
         item = n.item;
-        iz = n.iz;
-        de = n.de;
+        
+        // Libero memoria actual
+        if(iz != NULL)
+            delete iz;
+        if(de != NULL)
+            delete de;
+            
+        // Creo nuevos subárboles
+        iz = new TABBPoro(*n.iz);
+        de = new TABBPoro(*n.de);
     }
     return *this;
 }
@@ -112,9 +131,9 @@ bool TABBPoro::Insertar(const TPoro & poro) {
     
     // Inserto según el volumen
     if(poro.Volumen() < nodo->item.Volumen())
-        return nodo->iz.Insertar(poro);
+        return nodo->iz->Insertar(poro);  // Acceder con -> en vez de .
     else
-        return nodo->de.Insertar(poro);
+        return nodo->de->Insertar(poro);  // Acceder con -> en vez de .
 }
 
 bool TABBPoro::Borrar(const TPoro & poro) {
@@ -124,42 +143,42 @@ bool TABBPoro::Borrar(const TPoro & poro) {
     
     // Voy buscando el nodo a borrar
     if(poro.Volumen() < nodo->item.Volumen())
-        return nodo->iz.Borrar(poro);
+        return nodo->iz->Borrar(poro);  // Acceder con -> en vez de .
     else if(poro.Volumen() > nodo->item.Volumen())
-        return nodo->de.Borrar(poro);
+        return nodo->de->Borrar(poro);  // Acceder con -> en vez de .
     else if(nodo->item != poro) // Mismo volumen pero diferente poro
         return false;
     else {
         // He encontrado el poro a borrar
         
         // Caso 1: Nodo hoja (sin hijos)
-        if(nodo->iz.EsVacio() && nodo->de.EsVacio()) {
+        if(nodo->iz->EsVacio() && nodo->de->EsVacio()) {  // Acceder con -> en vez de .
             delete nodo;
             nodo = NULL;
             return true;
         }
         // Caso 2: Solo tiene hijo derecho
-        else if(nodo->iz.EsVacio()) {
+        else if(nodo->iz->EsVacio()) {  // Acceder con -> en vez de .
             TNodoABB *aux = nodo;
-            nodo = aux->de.nodo;
-            aux->de.nodo = NULL; // Para evitar que borre el subárbol
+            nodo = aux->de->nodo;  // Acceder con -> en vez de .
+            aux->de->nodo = NULL;  // Para evitar que borre el subárbol
             delete aux;
             return true;
         }
         // Caso 3: Solo tiene hijo izquierdo
-        else if(nodo->de.EsVacio()) {
+        else if(nodo->de->EsVacio()) {  // Acceder con -> en vez de .
             TNodoABB *aux = nodo;
-            nodo = aux->iz.nodo;
-            aux->iz.nodo = NULL; // Para evitar que borre el subárbol
+            nodo = aux->iz->nodo;  // Acceder con -> en vez de .
+            aux->iz->nodo = NULL;  // Para evitar que borre el subárbol
             delete aux;
             return true;
         }
         // Caso 4: Tiene ambos hijos, sustituyo por el mayor de la izquierda
         else {
             // Busco el nodo más a la derecha del subárbol izquierdo
-            TABBPoro *mayorIzquierda = &nodo->iz;
-            while(!mayorIzquierda->nodo->de.EsVacio())
-                mayorIzquierda = &mayorIzquierda->nodo->de;
+            TABBPoro *mayorIzquierda = nodo->iz;  // Directo al puntero
+            while(!mayorIzquierda->nodo->de->EsVacio())  // Acceder con -> en vez de .
+                mayorIzquierda = mayorIzquierda->nodo->de;  // Directo al puntero
             
             // Reemplazo el nodo actual por el mayor de la izquierda
             nodo->item = mayorIzquierda->nodo->item;
@@ -176,9 +195,9 @@ bool TABBPoro::Buscar(const TPoro & poro) const {
     
     // Busco según el volumen
     if(poro.Volumen() < nodo->item.Volumen())
-        return nodo->iz.Buscar(poro);
+        return nodo->iz->Buscar(poro);  // Acceder con -> en vez de .
     else if(poro.Volumen() > nodo->item.Volumen())
-        return nodo->de.Buscar(poro);
+        return nodo->de->Buscar(poro);  // Acceder con -> en vez de .
     else // Mismo volumen, verifico si es el mismo poro
         return nodo->item == poro;
 }
@@ -195,8 +214,8 @@ int TABBPoro::Altura() const {
         return 0;
     
     // La altura es 1 + el máximo entre las alturas de los subárboles
-    int alturaIzq = nodo->iz.Altura();
-    int alturaDer = nodo->de.Altura();
+    int alturaIzq = nodo->iz->Altura();  // Acceder con -> en vez de .
+    int alturaDer = nodo->de->Altura();  // Acceder con -> en vez de .
     
     return 1 + (alturaIzq > alturaDer ? alturaIzq : alturaDer);
 }
@@ -206,7 +225,7 @@ int TABBPoro::Nodos() const {
         return 0;
     
     // Número de nodos = 1 + nodos del subárbol izquierdo + nodos del subárbol derecho
-    return 1 + nodo->iz.Nodos() + nodo->de.Nodos();
+    return 1 + nodo->iz->Nodos() + nodo->de->Nodos();  // Acceder con -> en vez de .
 }
 
 int TABBPoro::NodosHoja() const {
@@ -214,11 +233,11 @@ int TABBPoro::NodosHoja() const {
         return 0;
     
     // Si es un nodo hoja (no tiene hijos)
-    if(nodo->iz.EsVacio() && nodo->de.EsVacio())
+    if(nodo->iz->EsVacio() && nodo->de->EsVacio())  // Acceder con -> en vez de .
         return 1;
     
     // Si no es hoja, sumo las hojas de los subárboles
-    return nodo->iz.NodosHoja() + nodo->de.NodosHoja();
+    return nodo->iz->NodosHoja() + nodo->de->NodosHoja();  // Acceder con -> en vez de .
 }
 
 // Métodos auxiliares para los recorridos
@@ -226,14 +245,14 @@ int TABBPoro::NodosHoja() const {
 void TABBPoro::InordenAux(TVectorPoro & v, int & pos) const {
     if(!EsVacio()) {
         // Recorro subárbol izquierdo
-        nodo->iz.InordenAux(v, pos);
+        nodo->iz->InordenAux(v, pos);  // Acceder con -> en vez de .
         
         // Proceso nodo actual
         v[pos] = nodo->item;
         pos++;
         
         // Recorro subárbol derecho
-        nodo->de.InordenAux(v, pos);
+        nodo->de->InordenAux(v, pos);  // Acceder con -> en vez de .
     }
 }
 
@@ -244,20 +263,20 @@ void TABBPoro::PreordenAux(TVectorPoro & v, int & pos) const {
         pos++;
         
         // Recorro subárbol izquierdo
-        nodo->iz.PreordenAux(v, pos);
+        nodo->iz->PreordenAux(v, pos);  // Acceder con -> en vez de .
         
         // Recorro subárbol derecho
-        nodo->de.PreordenAux(v, pos);
+        nodo->de->PreordenAux(v, pos);  // Acceder con -> en vez de .
     }
 }
 
 void TABBPoro::PostordenAux(TVectorPoro & v, int & pos) const {
     if(!EsVacio()) {
         // Recorro subárbol izquierdo
-        nodo->iz.PostordenAux(v, pos);
+        nodo->iz->PostordenAux(v, pos);  // Acceder con -> en vez de .
         
         // Recorro subárbol derecho
-        nodo->de.PostordenAux(v, pos);
+        nodo->de->PostordenAux(v, pos);  // Acceder con -> en vez de .
         
         // Proceso nodo actual
         v[pos] = nodo->item;
@@ -325,11 +344,11 @@ TVectorPoro TABBPoro::Niveles() const {
             pos++;
             
             // Agrego hijos a la cola
-            if(!arbol->nodo->iz.EsVacio())
-                cola.push(&arbol->nodo->iz);
+            if(!arbol->nodo->iz->EsVacio())  // Acceder con -> en vez de .
+                cola.push(arbol->nodo->iz);  // Directo al puntero
             
-            if(!arbol->nodo->de.EsVacio())
-                cola.push(&arbol->nodo->de);
+            if(!arbol->nodo->de->EsVacio())  // Acceder con -> en vez de .
+                cola.push(arbol->nodo->de);  // Directo al puntero
         }
     }
     
