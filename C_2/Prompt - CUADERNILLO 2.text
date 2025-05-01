@@ -1,0 +1,167 @@
+CUADERNILLO 2
+
+Árbol Binario de Búsqueda (ABB) de TPoro ("TABBPoro")
+
+Qué se pide:
+A partir de las estructuras de datos desarrolladas en el Cuadernillo 1, se pide construir una clase que
+representa un Árbol Binario de Búsqueda (ABB) de objetos de tipo TPoro ("TABBPoro").
+
+Para ello, la clase del árbol ABB a desarrollar empleará las clases TPoro y TVectorPoro desarrolladas en
+el Cuadernillo 1.
+
+Internamente, el ABB contendrá un puntero a un nodo.
+
+Para representar cada nodo del ABB, se tiene que definir la clase TNodoABB con su forma canónica
+(constructor, constructor de copia, destructor y sobrecarga del operador asignación) como mínimo.
+
+En la clase TABBPoro se tienen que implementar los recorridos en profundidad (INORDEN, PREORDEN y
+POSTORDEN) y en anchura (NIVELES). Para reducir el coste del cálculo de los recorridos en el ABB, hace
+falta añadir métodos auxiliares a la parte privada de la clase: InordenAux, PreordenAux, PostordenAux
+(más adelante se detalla su formato).
+
+Prototipo de la Clase “TNodoABB”
+PARTE PRIVADA
+// El elemento del nodo
+TPoro item;
+// Subárbol izquierdo y derecho
+TABBPoro iz, de;
+FORMA CANÓNICA
+// Constructor por defecto
+TNodoABB ();
+// Constructor de copia
+TNodoABB (TNodoABB &);
+// Destructor
+~ TNodoABB ();
+// Sobrecarga del operador asignación
+TNodoABB & operator=( TNodoABB &);
+
+
+Prototipo de la Clase “TABBPoro”
+PARTE PRIVADA
+// Puntero al nodo
+TNodoABB *nodo;
+// AUXILIAR : Devuelve el recorrido en inorden
+void InordenAux(TVectorPoro &, int &);
+// AUXILIAR : Devuelve el recorrido en preorden
+void PreordenAux(TVectorPoro &, int &);
+// AUXILIAR : Devuelve el recorrido en postorden
+void PostordenAux(TVectorPoro &, int &);
+
+FORMA CANÓNICA
+// Constructor por defecto
+TABBPoro();
+// Constructor de copia
+TABBPoro(TABBPoro &);
+// Destructor
+~TABBPoro();
+// Sobrecarga del operador asignación
+TABBPoro & operator=(TABBPoro &);
+
+MÉTODOS
+// Sobrecarga del operador igualdad
+bool operator==(TABBPoro &);
+// Devuelve TRUE si el árbol está vacío, FALSE en caso contrario
+bool EsVacio();
+// Inserta el elemento en el árbol
+bool Insertar(TPoro &);
+// Borra el elemento en el árbol
+bool Borrar(TPoro &);
+// Devuelve TRUE si el elemento está en el árbol, FALSE en caso contrario
+bool Buscar(TPoro &);
+// Devuelve el elemento en la raíz del árbol
+TPoro Raiz();
+// Devuelve la altura del árbol (la altura de un árbol vacío es 0)
+int Altura();
+// Devuelve el número de nodos del árbol (un árbol vacío posee 0 nodos)
+int Nodos();
+// Devuelve el número de nodos hoja en el árbol (la raíz puede ser nodo hoja)
+int NodosHoja();
+// Devuelve el recorrido en INORDEN sobre un vector
+TVectorPoro Inorden();
+// Devuelve el recorrido en PREORDEN sobre un vector
+TVectorPoro Preorden();
+// Devuelve el recorrido en POSTORDEN sobre un vector
+TVectorPoro Postorden();
+// Devuelve el recorrido en NIVELES
+TVectorPoro Niveles();
+// Suma de dos ABB
+TABBPoro operator+( TABBPoro &);
+// Resta de dos ABB
+TABBPoro operator-( TABBPoro &);
+// Sobrecarga del operador salida
+friend ostream & operator<<(ostream &, TABBPoro &);
+
+
+
+
+Aclaraciones:
+• Se permite amistad entre las clases TABBPoro y TNodoABB.
+• La forma de emplear los métodos AUXILIARES para las ordenaciones (InordenAux, PreordenAux,
+PostordenAux), es (por ejemplo, para el caso del recorrido en Inorden):
+
+// Devuelve el recorrido en inorden
+TVectorPoro TABBPoro::Inorden()
+{
+// Posición en el vector que almacena el recorrido
+int posicion = 1;
+// Vector del tamaño adecuado para almacenar todos los nodos
+TVectorPoro v(Nodos());
+InordenAux(v, posicion);
+return v;
+}
+
+De este modo, se reduce el coste de crear múltiples objetos de tipo TVectorPoro, ya que sólo se
+emplea uno durante todo el cálculo del recorrido.
+
+
+4
+Aclaraciones:
+• Se permite amistad entre las clases TABBPoro y TNodoABB.
+• La forma de emplear los métodos AUXILIARES para las ordenaciones (InordenAux, PreordenAux,
+PostordenAux), es (por ejemplo, para el caso del recorrido en Inorden):
+// Devuelve el recorrido en inorden
+TVectorPoro TABBPoro::Inorden()
+{
+// Posición en el vector que almacena el recorrido
+int posicion = 1;
+// Vector del tamaño adecuado para almacenar todos los nodos
+TVectorPoro v(Nodos());
+InordenAux(v, posicion);
+return v;
+}
+De este modo, se reduce el coste de crear múltiples objetos de tipo TVectorPoro, ya que sólo se
+emplea uno durante todo el cálculo del recorrido.
+
+
+• Los TPoro en el árbol están ordenados en función del volumen (el que se pide en el Cuadernillo1).
+• Para simplificar los algoritmos, el árbol NO puede contener elementos con el mismo volumen. Por lo
+tanto, sólo se podrá insertar 1 TPoro vacío, al no poder repetirse el volumen en el árbol.
+• El Constructor de Copia tiene que realizar una copia exacta duplicando todos los nodos del árbol.
+• El Destructor tiene que liberar toda la memoria que ocupe el árbol.
+• En el operator=, la asignación tiene que realizar una copia exacta duplicando todos los nodos del árbol.
+Si se asigna un árbol a un árbol no vacío, se destruye el árbol inicial.
+• En el operator==, dos árboles son iguales si poseen los mismos elementos independientemente de la
+estructura interna del árbol (NO se exige que la estructura de ambos sea la misma).
+• Insertar devuelve TRUE si el elemento se puede insertar y FALSE en caso contrario (por ejemplo,
+porque el elemento a insertar ya existe en el árbol).
+• Borrar devuelve TRUE si el elemento se puede borrar y FALSE en caso contrario (por ejemplo, porque
+no existe en el árbol). El criterio de borrado es sustituir por el mayor de la izquierda.
+• Raiz devuelve el TPoro raíz del árbol. Si el árbol está vacío, devuelve un TPoro vacío.
+• Los 4 recorridos devuelven un vector (TVectorPoro) en el que todas las posiciones están
+ocupadas por los elementos del árbol (no pueden quedar posiciones sin asignar). Si el árbol está
+vacío, se devuelve un vector vacío (vector de dimensión 0).
+• El operador SALIDA ( operator << ) muestra el recorrido por Niveles del ABB, con el formato pedido en
+el Cuadernillo 1 para la clase TVectorPoro.
+
+
+• Para implementar el recorrido por Niveles hace falta utilizar una estructura de tipo COLA de punteros a
+ABB. Para implementar el uso de esta estructura, el alumno puede emplear los elementos que
+considere oportunos. Se recomienda: Estructuras ”queue” pre-definidas en las STL.
+
+
+
+• En el operador “+”, primero se tiene que sacar una copia del operando (árbol) de la izquierda y a
+continuación insertar los elementos del operando (árbol) de la derecha según su recorrido por Inorden.
+• En el operador “-”, se recorre el operando (árbol) de la izquierda por Inorden y si el elemento NO está
+en el operando (árbol) de la derecha, se inserta en el árbol resultante (inicialmente vacío) y el proceso
+se repite para todos los elementos del operando de la izquierda

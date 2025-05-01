@@ -1,0 +1,30 @@
+Una función en el árbol AVL:
+TVectorPoro * examen(const TListaPoro  & lista)
+La función debe realizar:
+Le pasamos una lista con poros, la función debe encontrar el poro en el árbol AVL y si lo encuentra debe de marcar el recorrido desde la raíz hasta el poro encontrado a través de un TVectorPoro y meterlo en una posición del TVectorPoro*.
+La longitud del TVectorPoro * debe ser la misma que la longitud de la lista.
+Casos base:
+- Si la lista es vacía devuelve NULL.
+- Si no encuentra el poro se devuelve un TVectorPoro vacío.
+- Si el árbol está vacío, se devuelve un array de TVectorPoro de la misma longitud que la lista y se devuelve todas las posiciones vacías.
+
+
+Ejemplo:
+
+Nivel 1:                68
+Nivel 2:         43             89
+Nivel 3:    20      50      70      96
+Nivel 4: 10   30  45  55  69  75  93  99
+
+Le pasamos la siguiente lista: 50 75 72 68 10
+
+Nos devolvería lo siguiente:
+TVectorPoro[0] =  68, 43, 50
+TVectorPoro[1] =  68, 89, 70, 75
+TVectorPoro[2] =  (Se queda Vacío)
+TVectorPoro[3] =  68
+TVectorPoro[4] =  68, 43, 20, 10
+
+
+
+PD: Esto no es el enunciado oficial, es lo que recuerdo del examen.
