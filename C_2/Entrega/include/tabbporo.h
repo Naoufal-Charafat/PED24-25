@@ -14,7 +14,7 @@ private:
     // El elemento del nodo
     TPoro item;
     // Subárbol izquierdo y derecho
-    TABBPoro *iz, *de;  // Changed from TABBPoro to TABBPoro*
+    TABBPoro *iz, *de; 
 
 public:
     // Constructor por defecto

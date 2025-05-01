@@ -131,9 +131,9 @@ bool TABBPoro::Insertar(const TPoro & poro) {
     
     // Inserto según el volumen
     if(poro.Volumen() < nodo->item.Volumen())
-        return nodo->iz->Insertar(poro);  // Acceder con -> en vez de .
+        return nodo->iz->Insertar(poro);   
     else
-        return nodo->de->Insertar(poro);  // Acceder con -> en vez de .
+        return nodo->de->Insertar(poro);   
 }
 
 bool TABBPoro::Borrar(const TPoro & poro) {
@@ -143,32 +143,32 @@ bool TABBPoro::Borrar(const TPoro & poro) {
     
     // Voy buscando el nodo a borrar
     if(poro.Volumen() < nodo->item.Volumen())
-        return nodo->iz->Borrar(poro);  // Acceder con -> en vez de .
+        return nodo->iz->Borrar(poro);   
     else if(poro.Volumen() > nodo->item.Volumen())
-        return nodo->de->Borrar(poro);  // Acceder con -> en vez de .
+        return nodo->de->Borrar(poro);   
     else if(nodo->item != poro) // Mismo volumen pero diferente poro
         return false;
     else {
         // He encontrado el poro a borrar
         
         // Caso 1: Nodo hoja (sin hijos)
-        if(nodo->iz->EsVacio() && nodo->de->EsVacio()) {  // Acceder con -> en vez de .
+        if(nodo->iz->EsVacio() && nodo->de->EsVacio()) {   
             delete nodo;
             nodo = NULL;
             return true;
         }
         // Caso 2: Solo tiene hijo derecho
-        else if(nodo->iz->EsVacio()) {  // Acceder con -> en vez de .
+        else if(nodo->iz->EsVacio()) {   
             TNodoABB *aux = nodo;
-            nodo = aux->de->nodo;  // Acceder con -> en vez de .
+            nodo = aux->de->nodo;   
             aux->de->nodo = NULL;  // Para evitar que borre el subárbol
             delete aux;
             return true;
         }
         // Caso 3: Solo tiene hijo izquierdo
-        else if(nodo->de->EsVacio()) {  // Acceder con -> en vez de .
+        else if(nodo->de->EsVacio()) {   
             TNodoABB *aux = nodo;
-            nodo = aux->iz->nodo;  // Acceder con -> en vez de .
+            nodo = aux->iz->nodo;   
             aux->iz->nodo = NULL;  // Para evitar que borre el subárbol
             delete aux;
             return true;
@@ -177,7 +177,7 @@ bool TABBPoro::Borrar(const TPoro & poro) {
         else {
             // Busco el nodo más a la derecha del subárbol izquierdo
             TABBPoro *mayorIzquierda = nodo->iz;  // Directo al puntero
-            while(!mayorIzquierda->nodo->de->EsVacio())  // Acceder con -> en vez de .
+            while(!mayorIzquierda->nodo->de->EsVacio())   
                 mayorIzquierda = mayorIzquierda->nodo->de;  // Directo al puntero
             
             // Reemplazo el nodo actual por el mayor de la izquierda
@@ -195,9 +195,9 @@ bool TABBPoro::Buscar(const TPoro & poro) const {
     
     // Busco según el volumen
     if(poro.Volumen() < nodo->item.Volumen())
-        return nodo->iz->Buscar(poro);  // Acceder con -> en vez de .
+        return nodo->iz->Buscar(poro);   
     else if(poro.Volumen() > nodo->item.Volumen())
-        return nodo->de->Buscar(poro);  // Acceder con -> en vez de .
+        return nodo->de->Buscar(poro);   
     else // Mismo volumen, verifico si es el mismo poro
         return nodo->item == poro;
 }
@@ -214,8 +214,8 @@ int TABBPoro::Altura() const {
         return 0;
     
     // La altura es 1 + el máximo entre las alturas de los subárboles
-    int alturaIzq = nodo->iz->Altura();  // Acceder con -> en vez de .
-    int alturaDer = nodo->de->Altura();  // Acceder con -> en vez de .
+    int alturaIzq = nodo->iz->Altura();   
+    int alturaDer = nodo->de->Altura();   
     
     return 1 + (alturaIzq > alturaDer ? alturaIzq : alturaDer);
 }
@@ -225,7 +225,7 @@ int TABBPoro::Nodos() const {
         return 0;
     
     // Número de nodos = 1 + nodos del subárbol izquierdo + nodos del subárbol derecho
-    return 1 + nodo->iz->Nodos() + nodo->de->Nodos();  // Acceder con -> en vez de .
+    return 1 + nodo->iz->Nodos() + nodo->de->Nodos(); 
 }
 
 int TABBPoro::NodosHoja() const {
@@ -233,11 +233,11 @@ int TABBPoro::NodosHoja() const {
         return 0;
     
     // Si es un nodo hoja (no tiene hijos)
-    if(nodo->iz->EsVacio() && nodo->de->EsVacio())  // Acceder con -> en vez de .
+    if(nodo->iz->EsVacio() && nodo->de->EsVacio())   
         return 1;
     
     // Si no es hoja, sumo las hojas de los subárboles
-    return nodo->iz->NodosHoja() + nodo->de->NodosHoja();  // Acceder con -> en vez de .
+    return nodo->iz->NodosHoja() + nodo->de->NodosHoja();   
 }
 
 // Métodos auxiliares para los recorridos
@@ -245,14 +245,14 @@ int TABBPoro::NodosHoja() const {
 void TABBPoro::InordenAux(TVectorPoro & v, int & pos) const {
     if(!EsVacio()) {
         // Recorro subárbol izquierdo
-        nodo->iz->InordenAux(v, pos);  // Acceder con -> en vez de .
+        nodo->iz->InordenAux(v, pos);   
         
         // Proceso nodo actual
         v[pos] = nodo->item;
         pos++;
         
         // Recorro subárbol derecho
-        nodo->de->InordenAux(v, pos);  // Acceder con -> en vez de .
+        nodo->de->InordenAux(v, pos);   
     }
 }
 
@@ -263,20 +263,20 @@ void TABBPoro::PreordenAux(TVectorPoro & v, int & pos) const {
         pos++;
         
         // Recorro subárbol izquierdo
-        nodo->iz->PreordenAux(v, pos);  // Acceder con -> en vez de .
+        nodo->iz->PreordenAux(v, pos);   
         
         // Recorro subárbol derecho
-        nodo->de->PreordenAux(v, pos);  // Acceder con -> en vez de .
+        nodo->de->PreordenAux(v, pos);   
     }
 }
 
 void TABBPoro::PostordenAux(TVectorPoro & v, int & pos) const {
     if(!EsVacio()) {
         // Recorro subárbol izquierdo
-        nodo->iz->PostordenAux(v, pos);  // Acceder con -> en vez de .
+        nodo->iz->PostordenAux(v, pos);   
         
         // Recorro subárbol derecho
-        nodo->de->PostordenAux(v, pos);  // Acceder con -> en vez de .
+        nodo->de->PostordenAux(v, pos);   
         
         // Proceso nodo actual
         v[pos] = nodo->item;
@@ -344,10 +344,10 @@ TVectorPoro TABBPoro::Niveles() const {
             pos++;
             
             // Agrego hijos a la cola
-            if(!arbol->nodo->iz->EsVacio())  // Acceder con -> en vez de .
+            if(!arbol->nodo->iz->EsVacio())   
                 cola.push(arbol->nodo->iz);  // Directo al puntero
             
-            if(!arbol->nodo->de->EsVacio())  // Acceder con -> en vez de .
+            if(!arbol->nodo->de->EsVacio())   
                 cola.push(arbol->nodo->de);  // Directo al puntero
         }
     }
