@@ -82,9 +82,9 @@ public:
 	int Longitud() const;
 	TListaPosicion Primera() const;
 	TListaPosicion Ultima() const;
-	//TListaPoro ExtraerRango (int min, int max);
+	TListaPoro ExtraerRango (int min, int max);
 
-	//void mezclar(const TListaPoro & l);
+	void mezclar(const TListaPoro & l);
 };
 
 #endif /* TLISTAPORO_H_ */

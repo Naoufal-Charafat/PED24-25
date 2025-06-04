@@ -6,6 +6,7 @@ TVectorPoro::TVectorPoro() : error() {
 	dimension = 0;
 }
 
+// Constructor con tamaño
 TVectorPoro::TVectorPoro(int dimension) : error() {
 	// Inicializo datos a NULL por seguridad
 	datos = NULL;
@@ -19,12 +20,14 @@ TVectorPoro::TVectorPoro(int dimension) : error() {
 	}
 }
 
+// Constructor de copia
 TVectorPoro::TVectorPoro(const TVectorPoro & v) {
 	// Inicializo datos a NULL antes de copiar
 	datos = NULL;
 	Copia(v);
 }
 
+// Destructor
 TVectorPoro::~TVectorPoro() {
 	if(datos != NULL) {
 		// Libero la memoria que había reservado
@@ -43,6 +46,11 @@ TVectorPoro & TVectorPoro::operator =(const TVectorPoro & v) {
 	return *this;
 }
 
+// Método privado para copiar el contenido de otro vector
+// Este método se usa tanto en el constructor de copia como en el operador =
+// y en el constructor por defecto
+// para evitar duplicación de código
+// y asegurar que la memoria se maneje correctamente
 void TVectorPoro::Copia(const TVectorPoro & v) {
 	dimension = v.dimension;
 	// Me aseguro de liberar la memoria si ya tenía datos
@@ -59,6 +67,7 @@ void TVectorPoro::Copia(const TVectorPoro & v) {
 	error = v.error;
 }
 
+// Método para comparar dos vectores
 bool TVectorPoro::operator ==(const TVectorPoro & v) const {
 	if(dimension != v.dimension) 
 		return false;
@@ -73,6 +82,11 @@ bool TVectorPoro::operator !=(const TVectorPoro & v) const {
 	return !(*this == v);  // Mejoro: reutilizo el operador ==
 }
 
+// Método para acceder a un elemento del vector
+// Permite acceder a un elemento por su posición (1-based indexing)
+// Devuelve una referencia al elemento en la posición pos
+// Si la posición es inválida, devuelve un objeto de error
+// que se inicializa en el constructor por defecto
 TPoro & TVectorPoro::operator [](int pos) {
 	// Verifico que la posición sea válida (1-based indexing)
 	if(pos >= 1 && pos <= dimension) 
@@ -80,6 +94,11 @@ TPoro & TVectorPoro::operator [](int pos) {
 	return error;
 }
 
+// Método para acceder a un elemento del vector (versión const)
+// Permite acceder a un elemento por su posición (1-based indexing)
+// Devuelve una copia del elemento en la posición pos
+// Si la posición es inválida, devuelve un objeto de error
+// que se inicializa en el constructor por defecto
 TPoro TVectorPoro::operator [](int pos) const {
 	// Version const del operador []
 	if(pos >= 1 && pos <= dimension) 
@@ -87,10 +106,17 @@ TPoro TVectorPoro::operator [](int pos) const {
 	return error;
 }
 
+// Método para obtener la longitud del vector
 int TVectorPoro::Longitud() const {
 	return dimension;
 }
 
+// Método para contar la cantidad de poros no vacíos en el vector
+// Recorre el vector y cuenta los elementos que no son vacíos
+// Un poro se considera vacío si su posición es (0, 0), su volumen es 0
+// y su color es NULL
+// Devuelve la cantidad de poros no vacíos
+// Si el vector está vacío, devuelve 0
 int TVectorPoro::Cantidad() const {
 	int cantidad = 0;
 	// Cuento los poros no vacíos
@@ -99,7 +125,14 @@ int TVectorPoro::Cantidad() const {
 			cantidad++;
 	return cantidad;
 }
-//--
+
+// Método para redimensionar el vector
+// Cambia el tamaño del vector a un nuevo tamaño especificado por tam
+// Si el nuevo tamaño es menor que el actual, se pierden los elementos
+// que exceden el nuevo tamaño
+// Si el nuevo tamaño es mayor que el actual, se reserva nuevo espacio
+// y se copian los elementos existentes
+// Devuelve true si la redimensión fue exitosa, false en caso contrario
 bool TVectorPoro::Redimensionar(int tam) {
 	// Si el tamaño es inválido o igual al actual, no hago nada
 	if(tam <= 0 || tam == dimension) 
@@ -123,6 +156,12 @@ bool TVectorPoro::Redimensionar(int tam) {
 	return true;
 }
 
+// Método para obtener un puntero a los datos del vector
+// Devuelve un puntero al array de TPoro
+// Esto puede ser útil para acceder directamente a los datos
+// sin necesidad de usar el operador []
+// Permite manipular los datos directamente
+// y puede ser útil en ciertas situaciones
 TPoro* TVectorPoro::getDatosPtr() {
 	return datos;
 }

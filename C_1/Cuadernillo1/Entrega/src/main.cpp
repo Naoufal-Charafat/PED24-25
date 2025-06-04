@@ -1,39 +1,79 @@
 #include <iostream>
-
 using namespace std;
 
 #include "tporo.h"
 #include "tvectorporo.h"
+#include "tabbporo.h"
 #include "tlistaporo.h"
 
+int main() {
+    // -------------------------------
+    // 1. Prueba de TPoro
+    // -------------------------------
+    cout << "== TPoro ==" << endl;
+    TPoro p1(1, 2, 3.0, "ROJO");
+    TPoro p2(5, 7, 2.5, "azul");
+    TPoro p3(4, 4, 1.5, "Verde");
+    TPoro p4; // vacío
 
-int
-main()
-{
-{
-  TPoro a(1, 2, 3, (char*) "rojo");
+    cout << "Poro 1: " << p1 << endl;
+    cout << "Poro 2: " << p2 << endl;
+    cout << "Poro 3: " << p3 << endl;
+    cout << "Poro vacío: " << p4 << endl;
 
-  cout << a << endl;
-}
-{
-  TPoro a(1, 2, 3, (char*) "rojo");
-  TVectorPoro v(5);
+    // -------------------------------
+    // 2. Prueba de TVectorPoro
+    // -------------------------------
+    cout << "\n== TVectorPoro ==" << endl;
+    TVectorPoro vector(3);
+    vector[1] = p1;
+    vector[2] = p2;
+    vector[3] = p3;
 
-  v[1] = a;
-  v[2] = a;
-  v[3] = a;
-  v[4] = a;
-  v[5] = a;
+    cout << "Vector de poros: " << vector << endl;
+    cout << "Cantidad no vacíos: " << vector.Cantidad() << endl;
 
-  cout << v << endl;
-}
-{
-  TPoro p(1, 1, 1), q(2, 2, 2), r(3, 3, 3);
-  TListaPoro a;
+    // -------------------------------
+    // 3. Prueba de TABBPoro
+    // -------------------------------
+    cout << "\n== TABBPoro ==" << endl;
+    TABBPoro arbol;
 
-  a.Insertar(p); a.Insertar(q); a.Insertar(r);
+    arbol.Insertar(p1);
+    arbol.Insertar(p2);
+    arbol.Insertar(p3);
 
-  cout << a << endl;
-}
+    cout << "Recorrido Inorden: " << arbol.Inorden() << endl;
+    cout << "Recorrido Preorden: " << arbol.Preorden() << endl;
+    cout << "Recorrido Postorden: " << arbol.Postorden() << endl;
+    cout << "Recorrido por Niveles: " << arbol.Niveles() << endl;
+    cout << "Nodos totales: " << arbol.Nodos() << endl;
+    cout << "Altura del árbol: " << arbol.Altura() << endl;
 
+    // -------------------------------
+    // 4. Prueba de TListaPoro
+    // -------------------------------
+    cout << "\n== TListaPoro ==" << endl;
+    TListaPoro lista;
+
+    lista.Insertar(p3);
+    lista.Insertar(p2);
+    lista.Insertar(p1); // se insertan ordenados por volumen
+
+    cout << "Lista de poros: " << lista << endl;
+    cout << "Longitud de la lista: " << lista.Longitud() << endl;
+
+    // Recorrido hacia adelante
+    cout << "Recorrido hacia adelante:" << endl;
+    for (TListaPosicion pos = lista.Primera(); !pos.EsVacia(); pos = pos.Siguiente()) {
+        cout << lista.Obtener(pos) << endl;
+    }
+
+    // Recorrido hacia atrás
+    cout << "Recorrido hacia atrás:" << endl;
+    for (TListaPosicion pos = lista.Ultima(); !pos.EsVacia(); pos = pos.Anterior()) {
+        cout << lista.Obtener(pos) << endl;
+    }
+
+    return 0;
 }
