@@ -52,5 +52,7 @@ int main() {
     cout << "Nodos totales: " << arbol.Nodos() << endl;
     cout << "Nodos hoja: " << arbol.NodosHoja() << endl;
 
+    cout << "esto es  src/tad" << endl;
+
     return 0;
 }
