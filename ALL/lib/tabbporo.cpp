@@ -393,7 +393,7 @@ ostream & operator<<(ostream & os, const TABBPoro & a) {
 
 
 
-bool TABBPoro::examen(TListaPoro &l) {
+
 
     /*
             **Añadir la siguiente función a la parte pública de TABBporo:** 
@@ -412,13 +412,17 @@ bool TABBPoro::examen(TListaPoro &l) {
         1. **TListaporo** no está ordenada, así que el **MÍNIMO** y **MÁXIMO** nodo de la lista habrá que hallarlos mediante el criterio de ordenación propio de **TPoro** (ya usado en la implementación de **TABBporo**). 
         2. Si el árbol o la lista de entrada son vacíos, se devuelve **FALSE**. 
     */
+bool TABBPoro::examen(TListaPoro &l) {
+    // Si el árbol o la lista están vacíos, o la lista tiene menos de 2 elementos
     if(EsVacio() || l.EsVacia() || l.Longitud() < 2)
         return false;
 
+    // Buscar el mínimo y máximo en la lista
     TListaPosicion pos = l.Primera();
     TPoro min = l.Obtener(pos);
     TPoro max = min;
 
+    // Recorrer la lista para encontrar min y max según el volumen
     for(; !pos.EsVacia(); pos = pos.Siguiente()) {
         TPoro aux = l.Obtener(pos);
         if(aux.Volumen() < min.Volumen())
@@ -427,57 +431,74 @@ bool TABBPoro::examen(TListaPoro &l) {
             max = aux;
     }
 
+    // Si min y max son el mismo nodo, no hay camino
     if(min == max)
         return false;
 
-    TABBPoro* subMin = this;
-    while(subMin != NULL && !subMin->EsVacio()) {
-        if(min.Volumen() < subMin->nodo->item.Volumen())
-            subMin = subMin->nodo->iz;
-        else if(min.Volumen() > subMin->nodo->item.Volumen())
-            subMin = subMin->nodo->de;
-        else if(subMin->nodo->item == min)
+    // Primero verificar si ambos nodos existen en el árbol
+    if(!Buscar(min) || !Buscar(max))
+        return false;
+
+    // Verificar si existe camino descendente de min a max
+    TABBPoro* nodoActual = this;
+    
+    // Primero encontrar el nodo min
+    while(nodoActual != NULL && !nodoActual->EsVacio()) {
+        if(min.Volumen() < nodoActual->nodo->item.Volumen())
+            nodoActual = nodoActual->nodo->iz;
+        else if(min.Volumen() > nodoActual->nodo->item.Volumen())
+            nodoActual = nodoActual->nodo->de;
+        else if(nodoActual->nodo->item == min)
+            break;
+        else
+            return false; // Mismo volumen pero diferente nodo
+    }
+
+    // Si no encontramos min, retornar false
+    if(nodoActual == NULL || nodoActual->EsVacio())
+        return false;
+
+    // Desde min, buscar si podemos llegar a max descendiendo
+    TABBPoro* busqueda = nodoActual;
+    while(busqueda != NULL && !busqueda->EsVacio()) {
+        if(max.Volumen() < busqueda->nodo->item.Volumen())
+            busqueda = busqueda->nodo->iz;
+        else if(max.Volumen() > busqueda->nodo->item.Volumen())
+            busqueda = busqueda->nodo->de;
+        else if(busqueda->nodo->item == max)
+            return true; // Encontramos un camino descendente de min a max
+        else
+            return false; // Mismo volumen pero diferente nodo
+    }
+
+    // Ahora verificar si existe camino descendente de max a min
+    nodoActual = this;
+    
+    // Primero encontrar el nodo max
+    while(nodoActual != NULL && !nodoActual->EsVacio()) {
+        if(max.Volumen() < nodoActual->nodo->item.Volumen())
+            nodoActual = nodoActual->nodo->iz;
+        else if(max.Volumen() > nodoActual->nodo->item.Volumen())
+            nodoActual = nodoActual->nodo->de;
+        else if(nodoActual->nodo->item == max)
             break;
         else
             return false;
     }
-    if(subMin == NULL || subMin->EsVacio())
+
+    // Si no encontramos max, retornar false
+    if(nodoActual == NULL || nodoActual->EsVacio())
         return false;
 
-    TABBPoro* recorrido = subMin;
-    while(recorrido != NULL && !recorrido->EsVacio()) {
-        if(max.Volumen() < recorrido->nodo->item.Volumen())
-            recorrido = recorrido->nodo->iz;
-        else if(max.Volumen() > recorrido->nodo->item.Volumen())
-            recorrido = recorrido->nodo->de;
-        else if(recorrido->nodo->item == max)
-            return true;
-        else
-            return false;
-    }
-
-    TABBPoro* subMax = this;
-    while(subMax != NULL && !subMax->EsVacio()) {
-        if(max.Volumen() < subMax->nodo->item.Volumen())
-            subMax = subMax->nodo->iz;
-        else if(max.Volumen() > subMax->nodo->item.Volumen())
-            subMax = subMax->nodo->de;
-        else if(subMax->nodo->item == max)
-            break;
-        else
-            return false;
-    }
-    if(subMax == NULL || subMax->EsVacio())
-        return false;
-
-    recorrido = subMax;
-    while(recorrido != NULL && !recorrido->EsVacio()) {
-        if(min.Volumen() < recorrido->nodo->item.Volumen())
-            recorrido = recorrido->nodo->iz;
-        else if(min.Volumen() > recorrido->nodo->item.Volumen())
-            recorrido = recorrido->nodo->de;
-        else if(recorrido->nodo->item == min)
-            return true;
+    // Desde max, buscar si podemos llegar a min descendiendo
+    busqueda = nodoActual;
+    while(busqueda != NULL && !busqueda->EsVacio()) {
+        if(min.Volumen() < busqueda->nodo->item.Volumen())
+            busqueda = busqueda->nodo->iz;
+        else if(min.Volumen() > busqueda->nodo->item.Volumen())
+            busqueda = busqueda->nodo->de;
+        else if(busqueda->nodo->item == min)
+            return true; // Encontramos un camino descendente de max a min
         else
             return false;
     }
