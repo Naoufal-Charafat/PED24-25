@@ -84,9 +84,7 @@ public:
     TABBPoro operator+(const TABBPoro &) const;
     // Resta de dos ABB
     TABBPoro operator-(const TABBPoro &) const;
-
-    // Comprueba si existe camino descendente entre el minimo y maximo de una lista
-    bool examen(TListaPoro &);
+ 
 
     
 };
