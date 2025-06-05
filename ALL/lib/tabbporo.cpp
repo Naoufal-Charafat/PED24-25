@@ -390,3 +390,97 @@ ostream & operator<<(ostream & os, const TABBPoro & a) {
     os << a.Niveles();
     return os;
 }
+
+
+
+bool TABBPoro::examen(TListaPoro &l) {
+
+    /*
+            **Añadir la siguiente función a la parte pública de TABBporo:** 
+
+        ```cpp
+        bool examen(TListaporo &l) 
+        ```
+
+        Dado un árbol **TABBporo** y una lista **TListaporo** pasada como parámetro, determinar si 2 de los nodos de la lista forman un **CAMINO DESCENDENTE** del ABB: 
+
+        a) Si entre el **MÍNIMO** y el **MÁXIMO** nodo de la lista hay **CAMINO DESCENDENTE** en el ABB, se devuelve **TRUE**.
+        b) Si entre el **MÍNIMO** y el **MÁXIMO** nodo de la lista **NO** hay **CAMINO DESCENDENTE** en el ABB, se devuelve **FALSE**.
+
+        **NOTAS:**
+
+        1. **TListaporo** no está ordenada, así que el **MÍNIMO** y **MÁXIMO** nodo de la lista habrá que hallarlos mediante el criterio de ordenación propio de **TPoro** (ya usado en la implementación de **TABBporo**). 
+        2. Si el árbol o la lista de entrada son vacíos, se devuelve **FALSE**. 
+    */
+    if(EsVacio() || l.EsVacia() || l.Longitud() < 2)
+        return false;
+
+    TListaPosicion pos = l.Primera();
+    TPoro min = l.Obtener(pos);
+    TPoro max = min;
+
+    for(; !pos.EsVacia(); pos = pos.Siguiente()) {
+        TPoro aux = l.Obtener(pos);
+        if(aux.Volumen() < min.Volumen())
+            min = aux;
+        if(aux.Volumen() > max.Volumen())
+            max = aux;
+    }
+
+    if(min == max)
+        return false;
+
+    TABBPoro* subMin = this;
+    while(subMin != NULL && !subMin->EsVacio()) {
+        if(min.Volumen() < subMin->nodo->item.Volumen())
+            subMin = subMin->nodo->iz;
+        else if(min.Volumen() > subMin->nodo->item.Volumen())
+            subMin = subMin->nodo->de;
+        else if(subMin->nodo->item == min)
+            break;
+        else
+            return false;
+    }
+    if(subMin == NULL || subMin->EsVacio())
+        return false;
+
+    TABBPoro* recorrido = subMin;
+    while(recorrido != NULL && !recorrido->EsVacio()) {
+        if(max.Volumen() < recorrido->nodo->item.Volumen())
+            recorrido = recorrido->nodo->iz;
+        else if(max.Volumen() > recorrido->nodo->item.Volumen())
+            recorrido = recorrido->nodo->de;
+        else if(recorrido->nodo->item == max)
+            return true;
+        else
+            return false;
+    }
+
+    TABBPoro* subMax = this;
+    while(subMax != NULL && !subMax->EsVacio()) {
+        if(max.Volumen() < subMax->nodo->item.Volumen())
+            subMax = subMax->nodo->iz;
+        else if(max.Volumen() > subMax->nodo->item.Volumen())
+            subMax = subMax->nodo->de;
+        else if(subMax->nodo->item == max)
+            break;
+        else
+            return false;
+    }
+    if(subMax == NULL || subMax->EsVacio())
+        return false;
+
+    recorrido = subMax;
+    while(recorrido != NULL && !recorrido->EsVacio()) {
+        if(min.Volumen() < recorrido->nodo->item.Volumen())
+            recorrido = recorrido->nodo->iz;
+        else if(min.Volumen() > recorrido->nodo->item.Volumen())
+            recorrido = recorrido->nodo->de;
+        else if(recorrido->nodo->item == min)
+            return true;
+        else
+            return false;
+    }
+
+    return false;
+}

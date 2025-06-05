@@ -3,6 +3,7 @@
 
 #include "tporo.h"
 #include "tvectorporo.h"
+#include "tlistaporo.h"
 #include <queue>
 
 class TABBPoro;
@@ -41,7 +42,9 @@ private:
     // AUXILIAR : Devuelve el recorrido en postorden
     void PostordenAux(TVectorPoro &, int &) const;
 
-public:
+   
+
+public: 
     // Constructor por defecto
     TABBPoro();
     // Constructor de copia
@@ -81,6 +84,11 @@ public:
     TABBPoro operator+(const TABBPoro &) const;
     // Resta de dos ABB
     TABBPoro operator-(const TABBPoro &) const;
+
+    // Comprueba si existe camino descendente entre el minimo y maximo de una lista
+    bool examen(TListaPoro &);
+
+    
 };
 
 #endif /* TABBPORO_H_ */
